@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\DriverResource\Pages;
+namespace App\Filament\Resources\DriverLicenseResource\Pages;
 
-use App\Filament\Resources\DriverResource;
+use App\Filament\Resources\DriverLicenseResource;
 use Filament\Actions;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
 use Joaopaulolndev\FilamentPdfViewer\Infolists\Components\PdfViewerEntry;
 
-class ViewDriver extends ViewRecord
+class ViewLicense extends ViewRecord
 {
-    protected static string $resource = DriverResource::class;
-
-    protected static ?string $title = 'Ver Chofer';
+    protected static string $resource = DriverLicenseResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -21,7 +19,6 @@ class ViewDriver extends ViewRecord
             Actions\EditAction::make(),
         ];
     }
-
     public function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -37,17 +34,18 @@ class ViewDriver extends ViewRecord
                                 Infolists\Components\Card::make('Datos Personales')
                                     ->columnSpan(1)
                                     ->schema([
-                                        Infolists\Components\TextEntry::make('name')
-                                            ->label('Nombre'),
-                                        Infolists\Components\TextEntry::make('last_paternal_name')
-                                            ->label('Apellido Paterno'),
-                                        Infolists\Components\TextEntry::make('last_maternal_name')
-                                            ->label('Apellido Materno'),
-                                        Infolists\Components\TextEntry::make('dni')
-                                            ->label('DNI'),
-                                        Infolists\Components\TextEntry::make('cargo.name')
-                                            ->label('Cargo')
+                                        Infolists\Components\TextEntry::make('driver.full_name')
+                                            ->label('Nombre')
+                                            ->getStateUsing(fn($record) => $record->driver->name . ' ' . $record->driver->last_paternal_name . ' ' . $record->driver->last_maternal_name),
+                                        Infolists\Components\TextEntry::make('license_number')
+                                            ->label('Número de Licencia'),
+                                        Infolists\Components\TextEntry::make('expiration_date')
+                                            ->label('Fecha de Vencimiento'),
+                                        Infolists\Components\TextEntry::make('license_type')
+                                            ->label('Tipo de Licencia')
                                             ->badge(),
+
+
                                     ]),
                                 Infolists\Components\Grid::make()
                                     ->columnSpan(3)

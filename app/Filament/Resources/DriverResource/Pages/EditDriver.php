@@ -17,4 +17,6 @@ class EditDriver extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected static ?string $title = 'Editar Chofer';
 }

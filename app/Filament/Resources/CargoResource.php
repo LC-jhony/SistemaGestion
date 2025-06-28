@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CargoResource\Pages;
-use App\Filament\Resources\CargoResource\RelationManagers;
 use App\Models\Cargo;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CargoResource extends Resource
 {
@@ -37,7 +34,7 @@ class CargoResource extends Resource
                             ->inline()
                             ->inlineLabel(false)
                             ->default(true),
-                    ])
+                    ]),
             ]);
     }
 

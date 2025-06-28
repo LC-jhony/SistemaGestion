@@ -10,14 +10,9 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\ActionGroup;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\DriverResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
-use App\Filament\Resources\DriverResource\RelationManagers;
 use Hugomyb\FilamentMediaAction\Tables\Actions\MediaAction;
-use Joaopaulolndev\FilamentPdfViewer\Forms\Components\PdfViewerField;
-use Joaopaulolndev\FilamentPdfViewer\Infolists\Components\PdfViewerEntry;
+use Asmit\FilamentUpload\Forms\Components\AdvancedFileUpload;
 
 class DriverResource extends Resource
 {
@@ -25,7 +20,7 @@ class DriverResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = "Conductore";
+    protected static ?string $modelLabel = 'Conductore';
 
     public static function form(Form $form): Form
     {
@@ -71,12 +66,13 @@ class DriverResource extends Resource
                                     ->schema([
                                         Forms\Components\Grid::make()
                                             ->schema([
-                                                Forms\Components\FileUpload::make('file')
+                                                // Forms\Components\FileUpload::make('file')
+                                                AdvancedFileUpload::make('file')
                                                     ->label('Documento')
                                                     ->default(null)
                                                     ->columnSpanFull()
-                                                    ->directory('documents')
                                                     ->visibility('public')
+                                                    ->directory('documents')
                                                     ->acceptedFileTypes(['application/pdf']),
                                             ]),
 
@@ -85,7 +81,6 @@ class DriverResource extends Resource
                     ]),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
@@ -126,15 +121,15 @@ class DriverResource extends Resource
                 MediaAction::make('pdf')
                     ->label('')
                     ->media(fn($record) => $record->file ? asset('storage/' . $record->file) : null)
-                    //->iconButton()
+                    // ->iconButton()
                     ->icon('bi-file-pdf-fill')
                     ->color('danger')
-                    ->visible(fn($record) => !empty($record->file)),
+                    ->visible(fn($record) => ! empty($record->file)),
                 ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                ])
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
