@@ -14,10 +14,12 @@ class DriverLicense extends Model
         'license_type',
         'file',
     ];
+
     protected $casts = [
         'file' => 'array',
         'expiration_date' => 'date',
     ];
+
     public function driver(): BelongsTo
     {
         return $this->belongsTo(

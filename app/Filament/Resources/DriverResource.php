@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
+use App\Filament\Resources\DriverResource\Pages;
 use App\Models\Cargo;
 use App\Models\Driver;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Filament\Tables\Actions\ActionGroup;
-use App\Filament\Resources\DriverResource\Pages;
-use Hugomyb\FilamentMediaAction\Tables\Actions\MediaAction;
 use Asmit\FilamentUpload\Forms\Components\AdvancedFileUpload;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Table;
+use Hugomyb\FilamentMediaAction\Tables\Actions\MediaAction;
 
 class DriverResource extends Resource
 {
@@ -86,6 +86,9 @@ class DriverResource extends Resource
     {
         return $table
             ->striped()
+            ->paginated([5, 10, 25, 50, 100, 'all'])
+            ->defaultPaginationPageOption(10)
+            ->searchable()
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
                     ->label('Nombre Completo')

@@ -19,6 +19,7 @@ class ViewLicense extends ViewRecord
             Actions\EditAction::make(),
         ];
     }
+
     public function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -36,7 +37,7 @@ class ViewLicense extends ViewRecord
                                     ->schema([
                                         Infolists\Components\TextEntry::make('driver.full_name')
                                             ->label('Nombre')
-                                            ->getStateUsing(fn($record) => $record->driver->name . ' ' . $record->driver->last_paternal_name . ' ' . $record->driver->last_maternal_name),
+                                            ->getStateUsing(fn ($record) => $record->driver->name.' '.$record->driver->last_paternal_name.' '.$record->driver->last_maternal_name),
                                         Infolists\Components\TextEntry::make('license_number')
                                             ->label('Número de Licencia'),
                                         Infolists\Components\TextEntry::make('expiration_date')
@@ -44,7 +45,6 @@ class ViewLicense extends ViewRecord
                                         Infolists\Components\TextEntry::make('license_type')
                                             ->label('Tipo de Licencia')
                                             ->badge(),
-
 
                                     ]),
                                 Infolists\Components\Grid::make()

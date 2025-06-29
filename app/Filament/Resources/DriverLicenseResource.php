@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Driver;
@@ -9,6 +10,9 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\DriverLicense;
 use Filament\Resources\Resource;
+use App\Tables\Columns\StatusColumn;
+use App\Tables\Columns\StatusLicense;
+use Filament\Tables\Columns\ViewColumn;
 use App\Filament\Resources\DriverLicenseResource\Pages;
 use Hugomyb\FilamentMediaAction\Tables\Actions\MediaAction;
 use Asmit\FilamentUpload\Forms\Components\AdvancedFileUpload;
@@ -70,9 +74,9 @@ class DriverLicenseResource extends Resource
                                             ->directory('Licencias')
                                             ->default(null)
                                             ->acceptedFileTypes(['application/pdf']),
-                                    ])
-                            ])
-                    ])
+                                    ]),
+                            ]),
+                    ]),
 
             ]);
     }
@@ -80,6 +84,10 @@ class DriverLicenseResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->striped()
+            ->paginated([5, 10, 25, 50, 100, 'all'])
+            ->defaultPaginationPageOption(10)
+            ->searchable()
             ->columns([
                 // Tables\Columns\TextColumn::make('driver.name')
                 //     ->label('Chofer')
@@ -101,11 +109,8 @@ class DriverLicenseResource extends Resource
                     ->label('Tipo de Licencia')
                     ->badge()
                     ->searchable(),
-                // Tables\Columns\ImageColumn::make('file')
-                //     ->label('Documentos')
-                //     ->circular()
-                //     ->stacked()
-                //     ->searchable(false),
+                StatusColumn::make('status')
+                    ->label('Estado de Licencia'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime()
@@ -118,7 +123,27 @@ class DriverLicenseResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Estado')
+                    ->options([
+                        'vigente' => 'Vigente',
+                        'por-vencer' => 'Por vencer',
+                        'vencido' => 'Vencido',
+                    ])
+                    ->query(function ($query, array $data) {
+                        if (!$data['value']) {
+                            return $query;
+                        }
+
+                        $today = now();
+
+                        return match ($data['value']) {
+                            'vigente' => $query->where('expiration_date', '>', $today->copy()->addDays(30)),
+                            'por-vencer' => $query->whereBetween('expiration_date', [$today, $today->copy()->addDays(30)]),
+                            'vencido' => $query->where('expiration_date', '<', $today),
+                            default => $query,
+                        };
+                    }),
             ])
             ->actions([
                 MediaAction::make('pdf')

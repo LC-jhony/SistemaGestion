@@ -8,4 +8,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCargo extends CreateRecord
 {
     protected static string $resource = CargoResource::class;
+
+    
 }
